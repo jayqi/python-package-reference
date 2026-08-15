@@ -1,0 +1,72 @@
+[project]
+name = "mypackage"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Jay Qi", email = "jayqi@users.noreply.github.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["uv_build>=0.12.0,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "zizmor",
+    { include-group = "tests" },
+    { include-group = "typecheck" },
+]
+tests = [
+    "coverage",
+    "pytest-cov",
+    "pytest",
+]
+typecheck = [
+    "ty",
+]
+vspect = [
+    "vspect",
+]
+
+## TOOLS
+
+[tool.uv]
+exclude-newer = "7 days"
+
+[tool.ruff]
+line-length = 99
+src = ["src/mypackage/**/*.py", "tests/**/*.py"]
+
+[tool.ruff.lint]
+select = [
+  "E", # Pyflakes
+  "F", # Pycodestyle
+  "I", # isort
+]
+unfixable = ["F"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["mypackage"]
+force-sort-within-sections = true
+
+[tool.ty.src]
+include = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=mypackage --cov-report=term --cov-report=html --cov-report=xml"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["mypackage"]
+# debug = ["pathmap"]  # Useful if path mapping isn't working as expected
+
+[tool.coverage.paths]
+mypackage = [
+  "src/mypackage/",
+  "*/site-packages/mypackage/"
+]
