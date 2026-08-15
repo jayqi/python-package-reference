@@ -1,3 +1,3 @@
 # Python Package Reference
 
-This repository is a reference template for a Python package with my latest preferences.
+This repository is a reference implementation for a Python package project with my latest preferences.
