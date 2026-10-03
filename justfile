@@ -1,3 +1,6 @@
+# Keep in sync with just-version in .github/workflows/tests.yml
+set minimum-version := '1.55.0'
+
 python := shell("cat .python-version")
 
 # Print this help documentation
