@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: "0 0 * * 0"
   workflow_dispatch:
+    inputs:
+      upgrade:
+        description: Upgrade locked dependencies before running tests
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -58,6 +63,10 @@ jobs:
 
       - name: Run static typechecking
         run: just typecheck --python=${{ matrix.python-version }}
+
+      - name: Upgrade locked dependencies
+        if: github.event_name == 'schedule' || inputs.upgrade
+        run: uv lock --upgrade
 
       - name: Run tests
         run: just test --python=${{ matrix.python-version }} -- -vv
