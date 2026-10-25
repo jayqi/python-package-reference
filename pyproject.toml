@@ -50,7 +50,6 @@ select = [
 unfixable = ["F"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["mypackage"]
 force-sort-within-sections = true
 
 [tool.ty.src]
