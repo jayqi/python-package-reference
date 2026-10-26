@@ -21,6 +21,14 @@ format *args:
     uv run -- ruff format {{args}}
     uv run -- ruff check --fix --extend-fixable=F {{args}}
 
+# Audit GitHub Actions workflows with zizmor (passes through args)
+zizmor *args:
+    #!/usr/bin/env sh
+    if [ -z "${GH_TOKEN:-}" ] && token=$(gh auth token 2>/dev/null); then
+        export GH_TOKEN="$token"
+    fi
+    uvx --exclude-newer "7 days" zizmor .github/ {{args}}
+
 # Run type checking (passes through args)
 [arg("python", long)]
 typecheck python=python *args:
