@@ -14,6 +14,6 @@ This project uses Just. Use the following `justfile` commands for code quality c
   - Positional arguments after `--` are passed to the typechecker. Use to run on specific paths.
 - **GitHub Actions audit**: `just zizmor [ARGS]`
   - Positional arguments are passed to zizmor.
-  - Uses `gh auth token` for online audits if `GH_TOKEN` is not set.
+  - Online audits run only if `GH_TOKEN` is set.
 
 This project uses uv for managing Python environments. Use `uv run` instead of `python` to run Python code.
