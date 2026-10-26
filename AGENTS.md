@@ -12,5 +12,8 @@ This project uses Just. Use the following `justfile` commands for code quality c
 - **Static typechecking**: `just typecheck [--python VERSION] -- [ARGS]`
   - Use `--python` to run for specific Python version
   - Positional arguments after `--` are passed to the typechecker. Use to run on specific paths.
+- **GitHub Actions audit**: `just zizmor [ARGS]`
+  - Positional arguments are passed to zizmor.
+  - Online audits run only if `GH_TOKEN` is set.
 
 This project uses uv for managing Python environments. Use `uv run` instead of `python` to run Python code.

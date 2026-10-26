@@ -38,6 +38,20 @@ jobs:
       - name: Lint package
         run: just lint
 
+  zizmor:
+    name: Run Zizmor audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        with:
+          advanced-security: false
+
   tests:
     name: "Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})"
     needs: code-quality
@@ -81,9 +95,19 @@ jobs:
           files: ./coverage.xml
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13' }}
 
+  all-green:
+    name: All green
+    if: always()
+    needs: [code-quality, zizmor, tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
+        with:
+          jobs: ${{ toJSON(needs) }}
+
   notify:
     name: Notify failed build
-    needs: [code-quality, tests]
+    needs: [code-quality, zizmor, tests]
     if: failure() && (github.event_name == 'push' || github.event_name == 'schedule')
     runs-on: ubuntu-latest
     permissions:
