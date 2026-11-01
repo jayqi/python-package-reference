@@ -130,7 +130,8 @@ jobs:
           uv run --only-group tests -- coverage report
           uv run --only-group tests -- coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
           uv run --only-group tests -- coverage html
-          echo "total=$(uv run --only-group tests -- coverage report --format=total)" >> "$GITHUB_OUTPUT"
+          total=$(uv run --only-group tests -- coverage report --format=total)
+          echo "total=$total" >> "$GITHUB_OUTPUT"
 
       - name: Upload HTML coverage report
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -149,8 +150,14 @@ jobs:
       - name: Push badge data to badges branch
         env:
           COVERAGE_TOTAL: ${{ needs.coverage.outputs.total }}
-          GH_TOKEN: ${{ github.token }}
+          TOKEN: ${{ github.token }}
         run: |
+          [[ $COVERAGE_TOTAL =~ ^[0-9]+$ ]] || { echo "Unexpected coverage total: '$COVERAGE_TOTAL'"; exit 1; }
+          main_sha=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)
+          if [[ "$main_sha" != "$GITHUB_SHA" ]]; then
+            echo "main has moved past ${GITHUB_SHA}; skipping badge update"
+            exit 0
+          fi
           if (( COVERAGE_TOTAL >= 90 )); then color=brightgreen
           elif (( COVERAGE_TOTAL >= 75 )); then color=yellow
           else color=red
@@ -162,8 +169,8 @@ jobs:
           git add coverage.json
           git -c user.name="github-actions[bot]" \
             -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit --quiet --message "Update coverage badge"
-          git push --force --quiet "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" badges
+            commit --quiet --message "Update coverage badge for ${GITHUB_SHA}"
+          git push --force --quiet "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" badges
 
   all-green:
     name: All green
