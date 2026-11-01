@@ -17,7 +17,7 @@ permissions: {}
 
 jobs:
   code-quality:
-    name: Code Quality
+    name: Code quality
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,7 +39,7 @@ jobs:
         run: just lint
 
   zizmor:
-    name: Run Zizmor audit
+    name: Zizmor audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
