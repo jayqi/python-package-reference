@@ -56,6 +56,17 @@ jobs:
         with:
           advanced-security: false
 
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-scopes: runtime, development, unknown
+
   tests:
     name: "Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})"
     needs: code-quality
@@ -179,11 +190,12 @@ jobs:
   all-green:
     name: All green
     if: always()
-    needs: [code-quality, zizmor, tests, coverage]
+    needs: [code-quality, zizmor, dependency-review, tests, coverage]
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
         with:
+          allowed-skips: dependency-review
           jobs: ${{ toJSON(needs) }}
 
   notify:
