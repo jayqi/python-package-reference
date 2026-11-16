@@ -136,14 +136,6 @@ jobs:
           pattern: coverage-data-*
           merge-multiple: true
 
-      - name: Merge coverage data artifacts
-        uses: actions/upload-artifact/merge@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: coverage-data
-          pattern: coverage-data-*
-          include-hidden-files: true
-          delete-merged: true
-
       - name: Combine coverage data
         run: uv run --only-group tests -- coverage combine
 
@@ -168,6 +160,14 @@ jobs:
         with:
           name: coverage-json
           path: coverage.json
+
+      - name: Merge coverage data artifacts
+        uses: actions/upload-artifact/merge@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage-data
+          pattern: coverage-data-*
+          include-hidden-files: true
+          delete-merged: true
 
   coverage-badge:
     name: Publish coverage badge
