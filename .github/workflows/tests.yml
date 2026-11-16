@@ -150,18 +150,11 @@ jobs:
 
       - uses: astral-sh/setup-uv@v10.3.3
 
-      - name: Merge coverage data artifacts
-        uses: actions/upload-artifact/merge@v7.0.2
-        with:
-          name: coverage-data
-          pattern: coverage-data-*
-          include-hidden-files: true
-          delete-merged: true
-
       - name: Download coverage data
         uses: actions/download-artifact@v8.0.2
         with:
-          name: coverage-data
+          pattern: coverage-data-*
+          merge-multiple: true
 
       - name: Combine coverage data
         run: uv run --only-group tests -- coverage combine
@@ -187,6 +180,14 @@ jobs:
         with:
           name: coverage-json
           path: coverage.json
+
+      - name: Merge coverage data artifacts
+        uses: actions/upload-artifact/merge@v7.0.2
+        with:
+          name: coverage-data
+          pattern: coverage-data-*
+          include-hidden-files: true
+          delete-merged: true
 
   coverage-badge:
     name: Publish coverage badge
